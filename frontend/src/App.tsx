@@ -45,6 +45,11 @@ function App() {
     }
   };
 
+  const handleDelete = async (id: string) => {
+    const newTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(newTodos);
+  };
+
   return (
     <>
       <div>
@@ -61,7 +66,7 @@ function App() {
           return (
             <div key={todo.id}>
               <p>{todo.title}</p>
-              <button>削除</button>
+              <button onClick={() => handleDelete(todo.id)}>削除</button>
             </div>
           );
         })}

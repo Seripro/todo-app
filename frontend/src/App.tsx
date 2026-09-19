@@ -46,8 +46,17 @@ function App() {
   };
 
   const handleDelete = async (id: string) => {
-    const newTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(newTodos);
+    const rawRes = await fetch(`${BASE_URL}/${id}`, {
+      method: "DELETE",
+    });
+    const res = await rawRes.json();
+    if (res.error) {
+      setError(res.error);
+      return;
+    } else {
+      const newTodos = todos.filter((todo) => todo.id !== id);
+      setTodos(newTodos);
+    }
   };
 
   return (

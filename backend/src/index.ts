@@ -17,7 +17,7 @@ app.use(
   "/*",
   cors({
     origin: "http://localhost:5173",
-    allowMethods: ["GET", "POST", "DELETE", "OPTIONS"],
+    allowMethods: ["GET", "POST", "DELETE", "OPTIONS", "PATCH"],
     allowHeaders: ["Content-Type"],
   }),
 );
@@ -65,6 +65,21 @@ app.delete("/api/todos/:id", async (c) => {
     return c.json({ id, message: "Deleted successfully" });
   } catch (error) {
     return c.json({ error: "Failed to delete todo" }, 500);
+  }
+});
+
+app.patch("/api/todos/:id", async (c) => {
+  try {
+    const id = c.req.param("id");
+    const body = await c.req.json();
+    const completed = body.completed;
+    await db
+      .collection(TODOS_COLLECTION)
+      .doc(id)
+      .update({ completed: completed });
+    return c.json({ id, message: "Updated successfully" });
+  } catch {
+    return c.json({ error: "Failed to update todo" }, 500);
   }
 });
 

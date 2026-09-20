@@ -59,6 +59,28 @@ function App() {
     }
   };
 
+  const handleToggle = async (id: string, completed: boolean) => {
+    const rawRes = await fetch(`${BASE_URL}/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ completed: !completed }),
+    });
+    const res = await rawRes.json();
+    if (res.error) {
+      setError(res.error);
+    } else {
+      const newTodos: Todo[] = todos.map((todo) => ({
+        id: todo.id,
+        title: todo.title,
+        completed: todo.id === id ? !todo.completed : todo.completed,
+        createdAt: todo.createdAt,
+      }));
+      setTodos(newTodos);
+    }
+  };
+
   return (
     <>
       <div>
@@ -75,6 +97,11 @@ function App() {
           return (
             <div key={todo.id}>
               <p>{todo.title}</p>
+              <input
+                type="checkbox"
+                checked={todo.completed}
+                onChange={() => handleToggle(todo.id, todo.completed)}
+              />
               <button onClick={() => handleDelete(todo.id)}>削除</button>
             </div>
           );
